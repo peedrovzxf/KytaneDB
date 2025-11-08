@@ -1,3 +1,6 @@
+#include "server.h"
+#include "handler.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,17 +44,19 @@ void server_start(const int port) {
             exit(EXIT_FAILURE);
         }
 
-        char buffer[1024];
+        char buffer[BUFFER_SIZE];
         const int bytes = (int) recv(client_fd, buffer, sizeof(buffer), 0);
+        if (bytes == -1) {
+            perror("An error happened when trying to read bytes from socket.");
+            exit(EXIT_FAILURE);
+        }
+
         if (bytes > 0) {
-            if (buffer[bytes -1] == '\n') {
-                buffer[bytes - 1] = '\0';
-            } else {
-                buffer[bytes] = '\0';
-            }
-            buffer[bytes - 1] = '\0';
+            sanitize_line(bytes, buffer);
             printf("> '%s'\n", buffer);
 
+            const char *result = handle_command(buffer);
+            send(client_fd, result, strlen(result), MSG_NOSIGNAL);
             send(client_fd, "\n", 1, MSG_NOSIGNAL);
             if (strcmp("SHUTDOWN", buffer) == 0) {
                 printf("Server is being stopped.\n");
@@ -61,4 +66,12 @@ void server_start(const int port) {
         close(client_fd);
     }
     close(socket_fd);
+}
+
+void sanitize_line(const int bytes, char buffer[BUFFER_SIZE]) {
+    if (buffer[bytes -1] == '\n') {
+        buffer[bytes - 1] = '\0';
+        return;
+    }
+    buffer[bytes] = '\0';
 }

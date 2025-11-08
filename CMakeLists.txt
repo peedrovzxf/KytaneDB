@@ -8,4 +8,8 @@ include_directories(include)
 add_executable(kytane-db
         src/main.c
         include/server.h
-        src/server.c)
+        src/server.c
+        include/handler.h
+        src/handler.c
+        include/storage.h
+        src/storage.c)
