@@ -17,6 +17,6 @@ char *storage_get(const char *key);
 _Bool storage_set(const char *key, const char *value);
 _Bool storage_del(const char *key);
 
-Entry *get_full_storage();
+char *print_storage();
 
 #endif //KYTANE_DB_STORAGE_H

@@ -38,11 +38,7 @@ char *handle_command(const char* input) {
     }
 
     if (strcmp(input, "PRINT") == 0) {
-        Entry *full_storage = get_full_storage();
-        for (int i = 0; i < entry_count; ++i) {
-            printf("Key %s, Value %s\n", full_storage[i].key, full_storage[i].value);
-        }
-        return "\0";
+        return print_storage();
     }
 
     if (strcmp(input, "SHUTDOWN") == 0) {

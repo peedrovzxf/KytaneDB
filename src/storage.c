@@ -43,6 +43,15 @@ _Bool storage_del(const char *key) {
     return 0;
 }
 
-Entry *get_full_storage() {
-    return storage;
+char *print_storage() {
+    static char buffer[4096];
+    buffer[0] = '\0';
+
+    for (int i = 0; i < entry_count; ++i) {
+        char line[256];
+        snprintf(line, sizeof(line), "Key %s, Value %s\n", storage[i].key, storage[i].value);
+        strncat(buffer, line, sizeof(buffer) - strlen(buffer) - 1);
+    }
+
+    return buffer;
 }
